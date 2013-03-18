@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 Jamal Moubarak
-Project 2
+Project 3
 VFW 1303
 -->
 <html>
@@ -33,6 +33,7 @@ VFW 1303
 		<form action="#" method="post" id="installForm" />
 			<fieldset id="installFieldset">
 				<legend>Client Info</legend>
+				<ul id="errors"></ul>
 				<ul id= "clientInfo">
 					<li id="select"><label for="group">Type of System:</label><br class=txtinput /></li>
 					<li><label for="compname">Company Name:</label><br><input type="text" id="compname" class=txtinput /></li>
@@ -69,7 +70,7 @@ VFW 1303
 							<li><input type="radio" value="5 Year" id="5year" name="warranty" class=radinput /><label for="5year">5 Year</label></li>
 						</ul>
 					</li>
-					<div class="priceField">
+					<div id="priceField">
 						<li><label for="price">System cost:</label><br><input type="password" id="price" class=txtinput placeholder="$0.00" /></li>
 					</div>
 					<li><label for="notes">Additional Information:</label><br><textarea id="notes" class=txtinput placeholder="Type additional information here."></textarea></li>
@@ -77,6 +78,9 @@ VFW 1303
 			</fieldset>
 			<div class="saveButton">
 				<input type="image" src="img/submitButton.jpg" width="130" height="35" border="0" id="submitButton" alt="Submit Form"></li>
+			</div>
+			<div id="editClientButton"
+				<input type="image" src="img/editClientButton.jpg" width="130" height="28" border="0" id="editClientButton" alt="Submit Form"></li>
 			</div>
 		</form>
 		<script type="text/javascript" src="js/main.js"></script>			

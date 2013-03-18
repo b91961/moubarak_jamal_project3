@@ -1,7 +1,7 @@
 /*
 <!DOCTYPE css>
 Jamal Moubarak
-Project 2
+Project 3
 VFW 1303
 */
 
@@ -56,6 +56,9 @@ legend {
 	text-align: right;
 	margin: 0.2em 0em 0em 0em
 }
+.editClientButton {
+	display: none
+}
 .priceField {
 	display: 
 }
@@ -63,10 +66,7 @@ legend {
     -webkit-transition-property: -webkit-box-shadow, background;
     -webkit-transition-duration: 0.25s;
     padding: 0.6em;
-    border-bottom: 0.1em solid #8baceb;
-    border-left: 0.1em solid #8baceb;
-    border-right: 0.1em solid #8baceb;
-    border-top: 0.1em solid #8baceb;
+    border: 0.1em solid #8baceb;
     -moz-box-shadow: 0em 0em 0.2em #000;
     -webkit-box-shadow: 0em 0em 0.2em #000;
     margin-bottom: 0.3em;
