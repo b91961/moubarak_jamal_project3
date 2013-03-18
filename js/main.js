@@ -26,6 +26,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			getLi = $("select"),
 			getSelect = document.createElement("select");
 			getSelect.setAttribute("id", "groups");
+			getSelect.setAttribute("class", "txtinput");
 		for(var i=0, j=installGroups.length; i<j; i++) {
 			var getOption = document.createElement("option");
 			var optionText = installGroups[i];
@@ -71,18 +72,24 @@ window.addEventListener("DOMContentLoaded", function(){
 	//Get the value of the checkInputs when clicked.
 	function getChecks(){
 		var checkInputs = document.forms[0].installed;
+		var storeChecks = [];
 		for(var i=0; i<checkInputs.length; i++){
 			if(checkInputs[i].checked){
-				installedValue = checkInputs.value;
-			}else{
-				installedValue = "No Items Installed";
+				installedValue = checkInputs[i].value;
+				storeChecks.push(installedValue);
 			}
 		}
+		if(storeChecks.length === 0){
+			installedValue = "There are no items installes.";
+			storeChecks.push(installedValue);
+		}
+		return storeChecks;
 	}
 	
 	//Saves the form data into local storage.
 	function saveData(key){
 	//If there is no key this means it is brand new item and we need a new key.
+		var id;
 		if(!key){
 			var id = Math.floor(Math.random()*100000001);
 		}else{
@@ -90,7 +97,6 @@ window.addEventListener("DOMContentLoaded", function(){
 			id = key;
 		}
 		getRadio();
-		getChecks();
 		var item 				= {};
 			item.group 			= ["Install:", $("groups").value];
 			item.compname		= ["Company Name:", $("compname").value];
@@ -101,7 +107,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			item.ipaddress		= ["Ip Address:", $("ipaddress").value];
 			item.sysuser		= ["System Username:", $("sysuser").value];
 			item.syspass		= ["System Password:", $("syspass").value];
-			item.installed 		= ["The client has these systems installed:", installedValue];
+			item.installed 		= ["The client has these systems installed:", getChecks()];
 			item.warranty 		= ["The client has this warranty:", warrantyValue];
 			item.quanity 		= ["Quantity (# of Cameras, TV's, POS Terminals, etc):", $("quanity").value];
 			item.price			= ["Price:", $("price").value];
@@ -153,121 +159,122 @@ window.addEventListener("DOMContentLoaded", function(){
 			localStorage.setItem(id, JSON.stringify(json[n]));
 		}
 	}
-
-	function showData(){
+	
+	function validate(e){
+		//declaring the items we want to check
+		var getGroup = $("groups");
+		var getcompname = $("compname");
+		var getcontname = $("contname");
+		var getcontphone = $("contphone");
+		var getcontemail = $("contemail");
+			
+		//reseting error messages
+		errorMessage.innerHTML = "";
+		getGroup.style.border = "1px solid #8baceb";
+		getcompname.style.border = "1px solid #8baceb";
+		getcontname.style.border = "1px solid #8baceb";
+		getcontphone.style.border = "1px solid #8baceb";
+		getcontemail.style.border = "1px solid #8baceb";
+			
+		//get error messages
+		var messageArray = [];
+		//group validations
+		if(getGroup.value=="--Type of System--"){
+			var groupError = "Please choose a group.";
+			getGroup.style.border = "1px solid red";
+			messageArray.push(groupError);
+		}
+			
+		//getcompname validation
+		if(getcompname.value === ""){
+			var compnameError = "Please enter a Company Name.";
+			getcompname.style.border = "1px solid red";
+			messageArray.push(compnameError);
+		}
+			
+		//contact validation
+		if(getcontname.value === ""){
+			var contnameError = "Please enter a Contact Name.";
+			getcontname.style.border = "1px solid red";
+			messageArray.push(contnameError);
+		}
+			
+		//contphone validation
+		var re = /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/;
+		if(!(re.exec(getcontphone.value))){
+			var contphoneError = "Please enter a valid phone number";
+			getcontphone.style.border = "1px solid red";
+			messageArray.push(contphoneError);
+		}
+			
+		//getcontemail validation
+		var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if(!(regex.exec(getcontemail.value))){
+			var contemailError = "Please enter a valid email address";
+			getcontemail.style.border = "1px solid red";
+			messageArray.push(contemailError);
+		}
+		//if there were errors, display them on the screen
+		if(messageArray.length >= 1){
+			for(var i=0, j=messageArray.length; i < j; i++){
+				var txt = document.createElement("li");
+				txt.innerHTML = messageArray[i];
+				errorMessage.appendChild(txt);
+			}
+			e.preventDefault();
+			return false;
+		}else{
+			//If everything is ok saveData.
+			saveData(this.key);
+		}
+	}
+	
+	function editItem(){
 		//Grab the data from our item from local storage.
 		var value = localStorage.getItem(this.key);
 		var item = JSON.parse(value);
-		
+    
 		//Show the form
 		linkControls("off");
-		
+    
 		//populate the form fields with current local storage values
 		$("groups").value = item.group[1];
 		$("compname").value = item.compname[1];
 		$("contname").value = item.contname[1];
 		$("contphone").value = item.contphone[1];
-		$("contemail").value = item.contemail[1];
+		$("contemail").value = item.contemail[1];    
 		$("date").value = item.date[1];
 		$("ipaddress").value = item.ipaddress[1];
 		$("sysuser").value = item.sysuser[1];
 		$("syspass").value = item.syspass[1];
 		if(item.installed[1] == "Surveillance"){
 			$("installed").setAttribute("checked", "checked");
-		}	
-		var radioInputs = document.forms[0].warranty;
-		for(var i=0; i<radioInputs.length; i++){
-			if(radioInputs[i].value == "90 Days" && item.warranty[1] == "90 Days"){
-				radioInputs[i].setAttribute("checked", "checked");
-			}else if(radioInputs[i].value == "1 Year" && item.warranty[1] == "1 Year"){
-				radioInputs[i].setAttribute("checked", "checked");
+		}  
+		var radios = document.forms[0].warranty;
+		for(var i=0; i<radios.length; i++){
+			if(radios[i].value == "90 Days" && item.warranty[1] == "90 Days"){
+				radios[i].setAttribute("checked", "checked");
+			}else if(radios[i].value == "1 Year" && item.warranty[1] == "1 Year"){
+				radios[i].setAttribute("checked", "checked");
 			}
 		}
 		$("quanity").value = item.quanity[1];
 		$("price").value = item.price[1];
 		$("notes").value = item.notes[1];
-		
+    
 		var save = $("submitButton");
-		//remove saveData from the submitButton
+		//remove the initial listener from the input save contact button
 		save.removeEventListener("click", saveData);
-		//change submitButton to editClientButton
+		//change Submit button value to edit button
 		$("submitButton").value = $("editClientButton");
-		var editClient = $("editClientButton");
-		//save the key value in this function as a property of the editClient event
-		editClient.addEventListener("click", validate);
-		editClient.key = this.key;
-		
+		var editSubmit = $("editClientButton");
+		//save the key value established in this function as a property of the edit submit event
+		//so we can use that value when we save the data we edited
+		editSubmit.addEventListener("click", validate);
+		editSubmit.key = this.key;
+    
 	}
-	
-			function validate(e){
-			//declaring the items we want to check
-			var getGroup = $("groups");
-			var getcompname = $("compname");
-			var getcontname = $("contname");
-			var getcontphone = $("contphone");
-			var getcontemail = $("contemail");
 			
-			//reseting error messages
-			errorMessage.innerHTML = "";
-			getGroup.style.border = "1px solid #8baceb";
-			getcompname.style.border = "1px solid #8baceb";
-			getcontname.style.border = "1px solid #8baceb";
-			getcontphone.style.border = "1px solid #8baceb";
-			getcontemail.style.border = "1px solid #8baceb";
-			
-			//get error messages
-			var messageArray = [];
-			//group validations
-			if(getGroup.value=="--Type of System--"){
-				var groupError = "Please choose a group.";
-				getGroup.style.border = "1px solid red";
-				messageArray.push(groupError);
-			}
-			
-			//getcompname validation
-			if(getcompname.value === ""){
-				var compnameError = "Please enter a Company Name.";
-				getcompname.style.border = "1px solid red";
-				messageArray.push(compnameError);
-			}
-			
-			//contact validation
-			if(getcontname.value === ""){
-				var contnameError = "Please enter a Contact Name.";
-				getcontname.style.border = "1px solid red";
-				messageArray.push(contnameError);
-			}
-			
-			//contphone validation
-			var re = /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/;
-			if(!(re.exec(getcontphone.value))){
-				var contphoneError = "Please enter a valid phone number";
-				getcontphone.style.border = "1px solid red";
-				messageArray.push(contphoneError);
-			}
-			
-			//getcontemail validation
-			var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-			if(!(regex.exec(getcontemail.value))){
-				var contemailError = "Please enter a valid email address";
-				getcontemail.style.border = "1px solid red";
-				messageArray.push(contemailError);
-			}
-			//if there were errors, display them on the screen
-			if(messageArray.length >= 1){
-				for(var i=0, j=messageArray.length; 1 < j; i++){
-					var txt = document.createElement("li");
-					txt.innerHTML = messageArray[i];
-					errorMessage.appendChild(txt);
-				}
-				e.preventDefault();
-				return false;
-			}else{
-				//If everything is ok saveData.
-				saveData(this.key);
-			}
-		}
-		
 		//Function delete item
 	function deleteItem(){
 		var ask = confirm("Are you sure you want to delete this contact?");
@@ -287,7 +294,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		editClientLink.href = "#";
 		editClientLink.key = key;
 		var editClientText = "Edit Client";
-		editClientLink.addEventListener("click", editClientLink);
+		editClientLink.addEventListener("click", editItem);
 		editClientLink.innerHTML = editClientText;
 		linksLi.appendChild(editClientLink);
 		
@@ -361,14 +368,5 @@ window.addEventListener("DOMContentLoaded", function(){
 	clearData.addEventListener("click", clearStorage);
 	var save = $("submitButton");
 	save.addEventListener("click", validate);
-	//Set checkInputs & Radio Click Events: Attach event listener to each radio button & checkInputs.
-	var checkInputs = document.forms[0].installed;
-	for (var i=0; i<checkInputs.length; i++){
-		checkInputs[i].addEventListener("click", getChecks);
-	}
-	var radioInputs = document.forms[0].warranty;
-	for (var p=0; p<radioInputs.length; p++){
-		radioInputs[p].addEventListener("click", getRadio);
-	}
 });
 
