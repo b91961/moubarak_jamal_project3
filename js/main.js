@@ -1,7 +1,7 @@
 // alert("JavaScript works!");
 
 // Jamal Moubarak
-// Project 2
+// Project 3
 // VFW 1303
 
 //Wait until DOM is loaded
@@ -16,7 +16,8 @@ window.addEventListener("DOMContentLoaded", function(){
 	//Establish Variable Defaults & Run Initial Functions
 	var installGroups = ["--Type of System--", "Surveillance", "Audio / Video", "Network", "POS"],
 		warrantyValue,
-		installedValue
+		installedValue,
+		errorMessage = $("errors");
 	;
 	
 	//Create select field and give items.
@@ -25,6 +26,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			getLi = $("select"),
 			getSelect = document.createElement("select");
 			getSelect.setAttribute("id", "groups");
+			getSelect.setAttribute("class", "txtinput");
 		for(var i=0, j=installGroups.length; i<j; i++) {
 			var getOption = document.createElement("option");
 			var optionText = installGroups[i];
@@ -59,31 +61,42 @@ window.addEventListener("DOMContentLoaded", function(){
 	
 		//Find the value of radio button that is selected.
 	function getRadio(){
-		var radios = document.forms[0].warranty;
-		for(var i=0; i<radios.length; i++){
-			if(radios[i].checked){
-				warrantyValue = radios[i].value;
+		var radioInputs = document.forms[0].warranty;
+		for(var i=0; i<radioInputs.length; i++){
+			if(radioInputs[i].checked){
+				warrantyValue = radioInputs[i].value;
 			}
 		}
 	}
 	
-	//Get the value of the checkbox when clicked.
+	//Get the value of the checkInputs when clicked.
 	function getChecks(){
-		var checkbox = document.forms[0].installed;
-		for(var i=0; i<checkbox.length; i++){
-			if(checkbox[i].checked){
-				installedValue = checkbox.value;
-			}else{
-				installedValue = "No Items Installed";
+		var checkInputs = document.forms[0].installed;
+		var storeChecks = [];
+		for(var i=0; i<checkInputs.length; i++){
+			if(checkInputs[i].checked){
+				installedValue = checkInputs[i].value;
+				storeChecks.push(installedValue);
 			}
 		}
+		if(storeChecks.length === 0){
+			installedValue = "There are no items installes.";
+			storeChecks.push(installedValue);
+		}
+		return storeChecks;
 	}
 	
 	//Saves the form data into local storage.
-	function saveData(){
-		var id = Math.floor(Math.random()*100000001);
+	function saveData(key){
+	//If there is no key this means it is brand new item and we need a new key.
+		var id;
+		if(!key){
+			var id = Math.floor(Math.random()*100000001);
+		}else{
+		//Set the item to a existing key so we can edit.
+			id = key;
+		}
 		getRadio();
-		getChecks();
 		var item 				= {};
 			item.group 			= ["Install:", $("groups").value];
 			item.compname		= ["Company Name:", $("compname").value];
@@ -94,14 +107,14 @@ window.addEventListener("DOMContentLoaded", function(){
 			item.ipaddress		= ["Ip Address:", $("ipaddress").value];
 			item.sysuser		= ["System Username:", $("sysuser").value];
 			item.syspass		= ["System Password:", $("syspass").value];
-			item.installed 		= ["The client has these systems installed:", installedValue];
+			item.installed 		= ["The client has these systems installed:", getChecks()];
 			item.warranty 		= ["The client has this warranty:", warrantyValue];
 			item.quanity 		= ["Quantity (# of Cameras, TV's, POS Terminals, etc):", $("quanity").value];
 			item.price			= ["Price:", $("price").value];
 			item.notes			= ["Notes:", $("notes").value];
 		localStorage.setItem(id, JSON.stringify(item));
 		alert("Client Information is Saved!");
-		console.log(id)
+		console.log(id);
 	}
 	
 	//JSON DATA: Create an object to test when no data is saved in Local Storage.
@@ -147,6 +160,157 @@ window.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 	
+	function validate(e){
+		//declaring the items we want to check
+		var getGroup = $("groups");
+		var getcompname = $("compname");
+		var getcontname = $("contname");
+		var getcontphone = $("contphone");
+		var getcontemail = $("contemail");
+			
+		//reseting error messages
+		errorMessage.innerHTML = "";
+		getGroup.style.border = "1px solid #8baceb";
+		getcompname.style.border = "1px solid #8baceb";
+		getcontname.style.border = "1px solid #8baceb";
+		getcontphone.style.border = "1px solid #8baceb";
+		getcontemail.style.border = "1px solid #8baceb";
+			
+		//get error messages
+		var messageArray = [];
+		//group validations
+		if(getGroup.value=="--Type of System--"){
+			var groupError = "Please choose a group.";
+			getGroup.style.border = "1px solid red";
+			messageArray.push(groupError);
+		}
+			
+		//getcompname validation
+		if(getcompname.value === ""){
+			var compnameError = "Please enter a Company Name.";
+			getcompname.style.border = "1px solid red";
+			messageArray.push(compnameError);
+		}
+			
+		//contact validation
+		if(getcontname.value === ""){
+			var contnameError = "Please enter a Contact Name.";
+			getcontname.style.border = "1px solid red";
+			messageArray.push(contnameError);
+		}
+			
+		//contphone validation
+		var re = /^(\()?\d{3}(\))?(-|\s)?\d{3}(-|\s)\d{4}$/;
+		if(!(re.exec(getcontphone.value))){
+			var contphoneError = "Please enter a valid phone number";
+			getcontphone.style.border = "1px solid red";
+			messageArray.push(contphoneError);
+		}
+			
+		//getcontemail validation
+		var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		if(!(regex.exec(getcontemail.value))){
+			var contemailError = "Please enter a valid email address";
+			getcontemail.style.border = "1px solid red";
+			messageArray.push(contemailError);
+		}
+		//if there were errors, display them on the screen
+		if(messageArray.length >= 1){
+			for(var i=0, j=messageArray.length; i < j; i++){
+				var txt = document.createElement("li");
+				txt.innerHTML = messageArray[i];
+				errorMessage.appendChild(txt);
+			}
+			e.preventDefault();
+			return false;
+		}else{
+			//If everything is ok saveData.
+			saveData(this.key);
+		}
+	}
+	
+	function editItem(){
+		//Grab the data from our item from local storage.
+		var value = localStorage.getItem(this.key);
+		var item = JSON.parse(value);
+    
+		//Show the form
+		linkControls("off");
+    
+		//populate the form fields with current local storage values
+		$("groups").value = item.group[1];
+		$("compname").value = item.compname[1];
+		$("contname").value = item.contname[1];
+		$("contphone").value = item.contphone[1];
+		$("contemail").value = item.contemail[1];    
+		$("date").value = item.date[1];
+		$("ipaddress").value = item.ipaddress[1];
+		$("sysuser").value = item.sysuser[1];
+		$("syspass").value = item.syspass[1];
+		if(item.installed[1] == "Surveillance"){
+			$("installed").setAttribute("checked", "checked");
+		}  
+		var radios = document.forms[0].warranty;
+		for(var i=0; i<radios.length; i++){
+			if(radios[i].value == "90 Days" && item.warranty[1] == "90 Days"){
+				radios[i].setAttribute("checked", "checked");
+			}else if(radios[i].value == "1 Year" && item.warranty[1] == "1 Year"){
+				radios[i].setAttribute("checked", "checked");
+			}
+		}
+		$("quanity").value = item.quanity[1];
+		$("price").value = item.price[1];
+		$("notes").value = item.notes[1];
+    
+		var save = $("submitButton");
+		//remove the initial listener from the input save contact button
+		save.removeEventListener("click", saveData);
+		//change Submit button value to edit button
+		$("submitButton").value = $("editClientButton");
+		var editSubmit = $("editClientButton");
+		//save the key value established in this function as a property of the edit submit event
+		//so we can use that value when we save the data we edited
+		editSubmit.addEventListener("click", validate);
+		editSubmit.key = this.key;
+    
+	}
+			
+		//Function delete item
+	function deleteItem(){
+		var ask = confirm("Are you sure you want to delete this contact?");
+		if(ask){
+			localStorage.removeItem(this.key);
+			window.location.reload();
+		}else{
+			alert("Client was not Deleted!");
+		}
+	}	
+	
+	//Create the edit and delete links for eash stored item in local storage
+	function makeItemLinks(key, linksLi){
+		
+		//add editClientLink
+		var editClientLink = document.createElement("a");
+		editClientLink.href = "#";
+		editClientLink.key = key;
+		var editClientText = "Edit Client";
+		editClientLink.addEventListener("click", editItem);
+		editClientLink.innerHTML = editClientText;
+		linksLi.appendChild(editClientLink);
+		
+		//add line break
+		var breakTag = document.createElement("br");
+		linksLi.appendChild(breakTag);
+		
+		//Add a delete single item link
+		var deleteLink = document.createElement("a");
+		deleteLink.href = "#";
+		deleteLink.key = key;
+		var deleteText = "Delete Client";
+		deleteLink.addEventListener("click", deleteItem);
+		deleteLink.innerHTML = deleteText;
+		linksLi.appendChild(deleteLink);	
+	}
 	
 	//Retrieve data from Local Storage.
 	function showData(){
@@ -161,9 +325,10 @@ window.addEventListener("DOMContentLoaded", function(){
 		var chooseList = document.createElement("ul");
 		chooseDiv.appendChild(chooseList);
 		document.body.appendChild(chooseDiv);
+		//$("item").style.display = "block";
 		for (var i=0, len=localStorage.length; i<len; i++) {
-			var q = -1;
 			var chooseli = document.createElement("li");
+			var linksLi = document.createElement("li");
 			chooseList.appendChild(chooseli);
 			var key = localStorage.key(i);
 			var value = localStorage.getItem(key);
@@ -172,14 +337,18 @@ window.addEventListener("DOMContentLoaded", function(){
 			var chooseSubList = document.createElement("ul");
 			chooseli.appendChild(chooseSubList);
 			for (var n in obj){
-				q++;
 				var chooseSubli = document.createElement("li");
 				chooseSubList.appendChild(chooseSubli);
 				var optSubText = obj[n][0] +" "+ obj [n][1];
 				chooseSubli.innerHTML = optSubText;
+				chooseSubList.appendChild(linksLi);
 			}
+			//Create edit and delete buttons for items in local storage.
+			makeItemLinks(localStorage.key(i), linksLi); 		
 		}
 	}
+	
+
 	
 	//Clear all stored data
 	function clearStorage() {
@@ -192,24 +361,12 @@ window.addEventListener("DOMContentLoaded", function(){
 			return false;
 		}
 	}
-	
-
-	
 	//Set Link & Submit Click Events
 	var displayData = $("displayData");
 	displayData.addEventListener("click", showData);
 	var clearData = $("clear");
 	clearData.addEventListener("click", clearStorage);
 	var save = $("submitButton");
-	save.addEventListener("click", saveData);
-	//Set Checkbox & Radio Click Events: Attach event listener to each radio button & checkbox.
-	var checkbox = document.forms[0].installed;
-	for (var i=0; i<checkbox.length; i++){
-		checkbox[i].addEventListener("click", getChecks);
-	}
-	var radios = document.forms[0].warranty;
-	for (var p=0; p<radios.length; p++){
-		radios[p].addEventListener("click", getRadio);
-	}
+	save.addEventListener("click", validate);
 });
 
