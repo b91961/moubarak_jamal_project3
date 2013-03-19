@@ -80,7 +80,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			}
 		}
 		if(storeChecks.length === 0){
-			installedValue = "There are no items installes.";
+			installedValue = "There are no items installed.";
 			storeChecks.push(installedValue);
 		}
 		return storeChecks;
@@ -280,6 +280,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		var ask = confirm("Are you sure you want to delete this contact?");
 		if(ask){
 			localStorage.removeItem(this.key);
+			alert("Client has been deleted!");
 			window.location.reload();
 		}else{
 			alert("Client was not Deleted!");
@@ -325,7 +326,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		var chooseList = document.createElement("ul");
 		chooseDiv.appendChild(chooseList);
 		document.body.appendChild(chooseDiv);
-		//$("item").style.display = "block";
+//		$("items").style.display = "block";
 		for (var i=0, len=localStorage.length; i<len; i++) {
 			var chooseli = document.createElement("li");
 			var linksLi = document.createElement("li");
