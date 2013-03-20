@@ -346,7 +346,6 @@ window.addEventListener("DOMContentLoaded", function(){
 		var chooseList = document.createElement("ul");
 		chooseDiv.appendChild(chooseList);
 		document.body.appendChild(chooseDiv);
-//		$("items").style.display = "block";
 		for (var i=0, len=localStorage.length; i<len; i++) {
 			var chooseli = document.createElement("li");
 			var linksLi = document.createElement("li");
@@ -368,8 +367,6 @@ window.addEventListener("DOMContentLoaded", function(){
 			makeItemLinks(localStorage.key(i), linksLi); 		
 		}
 	}
-	
-
 	
 	//Clear all stored data
 	function clearStorage() {
