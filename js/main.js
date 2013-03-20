@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			getLi = $("select"),
 			getSelect = document.createElement("select");
 			getSelect.setAttribute("id", "groups");
-			getSelect.setAttribute("class", "txtinput");
+			getSelect.setAttribute("class", "dropdown");
 		for(var i=0, j=installGroups.length; i<j; i++) {
 			var getOption = document.createElement("option");
 			var optionText = installGroups[i];
@@ -247,14 +247,34 @@ window.addEventListener("DOMContentLoaded", function(){
 		$("ipaddress").value = item.ipaddress[1];
 		$("sysuser").value = item.sysuser[1];
 		$("syspass").value = item.syspass[1];
-		if(item.installed[1] == "Surveillance"){
-			$("installed").setAttribute("checked", "checked");
+		var checkBoxes = document.forms[0].installed;
+		var storeCheckBoxes = [];
+		for(var j=0; j<checkBoxes.length; j++){
+			if(checkBoxes[j].value == "Surveillance" && item.installed[1] == "Surveillance"){
+				checkBoxes[j].setAttribute("checked", "checked");
+			}
+			if(checkBoxes[j].value == "Audio / Video" && item.installed[1] == "Audio / Video"){
+				checkBoxes[j].setAttribute("checked", "checked");
+			}
+			if(checkBoxes[j].value == "Network" && item.installed[1] == "Network"){
+				checkBoxes[j].setAttribute("checked", "checked");
+			}
+			if(checkBoxes[j].value == "POS" && item.installed[1] == "POS"){
+				checkBoxes[j].setAttribute("checked", "checked");
+			}
 		}  
 		var radios = document.forms[0].warranty;
 		for(var i=0; i<radios.length; i++){
 			if(radios[i].value == "90 Days" && item.warranty[1] == "90 Days"){
 				radios[i].setAttribute("checked", "checked");
-			}else if(radios[i].value == "1 Year" && item.warranty[1] == "1 Year"){
+			}
+			if(radios[i].value == "1 Year" && item.warranty[1] == "1 Year"){
+				radios[i].setAttribute("checked", "checked");
+			}
+			if(radios[i].value == "3 Year" && item.warranty[1] == "3 Year"){
+				radios[i].setAttribute("checked", "checked");
+			}
+			if(radios[i].value == "5 Year" && item.warranty[1] == "5 Year"){
 				radios[i].setAttribute("checked", "checked");
 			}
 		}
