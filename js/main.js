@@ -37,7 +37,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		getLi.appendChild(getSelect);
 	}
 	installType();
-	
+
 	//Turn the links on or off.
 	function linkControls(n){
 		switch(n){
@@ -292,8 +292,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		//so we can use that value when we save the data we edited
 		editSubmit.addEventListener("click", validate);
 		editSubmit.key = this.key;
-    
-	}
+    }
 			
 		//Function delete item
 	function deleteItem(){
