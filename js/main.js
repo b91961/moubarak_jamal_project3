@@ -52,8 +52,9 @@ window.addEventListener("DOMContentLoaded", function(){
 				$("clear").style.display = "inline";
 				$("displayData").style.display = "inline";
 				$("addClient").style.display = "none";
-				$("items").style.display = "none";
+				$("items").style.display = "inline";
 				break;
+				
 			default:
 				return false;
 		}
@@ -251,7 +252,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		var storeCheckBoxes = [];
 		for(var j=0; j<checkBoxes.length; j++){
 			if(checkBoxes[j].value == "Surveillance" && item.installed[1] == "Surveillance"){
-				checkBoxes[j].setAttribute("checked", "checked");
+					checkBoxes[j].setAttribute("checked", "checked");
 			}
 			if(checkBoxes[j].value == "Audio / Video" && item.installed[1] == "Audio / Video"){
 				checkBoxes[j].setAttribute("checked", "checked");
@@ -286,8 +287,9 @@ window.addEventListener("DOMContentLoaded", function(){
 		//remove the initial listener from the input save contact button
 		save.removeEventListener("click", saveData);
 		//change Submit button value to edit button
-		$("submitButton").value = $("editClientButton");
-		var editSubmit = $("editClientButton");
+		$("submitButton").src = $("editClientButton").src;
+		var editSubmit = $("editClientButton").src;
+		editSubmit.style.display = "";
 		//save the key value established in this function as a property of the edit submit event
 		//so we can use that value when we save the data we edited
 		editSubmit.addEventListener("click", validate);

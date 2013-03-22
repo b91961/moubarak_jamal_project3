@@ -65,11 +65,8 @@ legend {
 	text-align: right;
 	margin: 0.2em 0em 0em 0em
 }
-.editClientButton {
-	display: none
-}
-.priceField {
-	display: 
+#editClientButton {
+	display: none;
 }
 .txtinput {
     -webkit-transition-property: -webkit-box-shadow, background;
