@@ -252,7 +252,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		var storeCheckBoxes = [];
 		for(var j=0; j<checkBoxes.length; j++){
 			if(checkBoxes[j].value == "Surveillance" && item.installed[1] == "Surveillance"){
-					checkBoxes[j].setAttribute("checked", "checked");
+				checkBoxes[j].setAttribute("checked", "checked");
 			}
 			if(checkBoxes[j].value == "Audio / Video" && item.installed[1] == "Audio / Video"){
 				checkBoxes[j].setAttribute("checked", "checked");
